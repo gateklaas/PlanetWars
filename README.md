@@ -1,11 +1,11 @@
 Planet Wars
-==================
+===========
 
-=== Intelligent Systems ==
+### Intelligent Systems ###
 
 Project for the Intelligent Systems course, based on the google ai challenge 'planet wars'
 
-=== Bots ===
+### Bots ###
 
 * Adaptive bot
 * Bully bot
