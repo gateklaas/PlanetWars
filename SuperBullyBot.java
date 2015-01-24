@@ -27,7 +27,7 @@ public class SuperBullyBot
 		// (2) Find the weakest enemy planet.
 		Planet dest = null;
 		double destScore = Double.MAX_VALUE;
-		for (Planet notMyPlanet : pw.EnemyPlanets()) // <- DIFFERENT FROM BULLY_BOT
+		for (Planet notMyPlanet : pw.EnemyPlanets()) // <- THIS LINE IS DIFFERENT FROM BULLY_BOT
 		{
 			double score = (notMyPlanet.NumShips());
 

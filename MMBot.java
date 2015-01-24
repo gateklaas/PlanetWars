@@ -1,23 +1,48 @@
 public class MMBot
 {
-	public static final boolean DEBUG = true;
-
 	public static void doTurn(PlanetWars planetWars)
 	{
+		// Start timer
+		MinimaxInterruptTimer timer = new MinimaxInterruptTimer();
+		timer.start();
+
 		// Find our best move, look 4 moves ahead
 		GameState currentGameState = new GameState(planetWars.Planets());
-		Move bestMove = Minimax.findBestMove(currentGameState, 4);
+		Move bestMove = Minimax.findBestMove(currentGameState, 7);
 
 		if (bestMove == null)
 		{
-			// We're out of moves
-			log("GAME OVER");
+			// We're out of moves. Game over
 			System.exit(0);
 			return;
 		}
 
 		// Attack!
 		planetWars.IssueOrder(bestMove.getSourcePlanet(), bestMove.getDestinationPlanet());
+	}
+
+	static class MinimaxInterruptTimer extends Thread
+	{
+		public MinimaxInterruptTimer()
+		{
+			// Not a vital process, thus low priority.
+			setPriority(Thread.MIN_PRIORITY);
+		}
+
+		@Override
+		public void run()
+		{
+			// Wait 900 milliseconds
+			try
+			{
+				Thread.sleep(850);
+			}
+			catch (InterruptedException e)
+			{}
+
+			// Stops minimax neatly if it is still not finished
+			Minimax.interrupt();
+		}
 	}
 
 	public static void main(String[] args)
@@ -54,15 +79,6 @@ public class MMBot
 		catch (Exception e)
 		{
 
-		}
-	}
-
-	public static void log(String output)
-	{
-		if (DEBUG)
-		{
-			System.err.println(output);
-			System.err.flush();
 		}
 	}
 }

@@ -2,19 +2,23 @@ import java.util.List;
 
 public class Minimax
 {
+	private static Minimax minimax;
+
 	private Move bestMove;
 	private int maxDepth;
+	private boolean interrupt;
 
 	/** Returns the best move possible according to the minimax algorithm with alpha–beta pruning */
 	public static Move findBestMove(GameState gameState, int maxDepth)
 	{
-		MMBot.log("Current value: " + calcHeuristicValue(gameState));
+		PlanetWars.log("Current value: " + calcHeuristicValue(gameState));
 
-		Minimax minimax = new Minimax();
+		minimax = new Minimax();
+		minimax.interrupt = false;
 		minimax.maxDepth = maxDepth;
 		minimax.alphabeta(gameState, maxDepth, -1000000, 1000000, true);
 
-		MMBot.log("Best value: " + calcHeuristicValue(minimax.bestMove.getGameStateAfterMove()));
+		PlanetWars.log("Best value: " + calcHeuristicValue(minimax.bestMove.getGameStateAfterMove()));
 		return minimax.bestMove;
 	}
 
@@ -26,7 +30,7 @@ public class Minimax
 	{
 		List<Move> moveList = gameState.simulateAllPossibleMoves(max);
 
-		if (depth == 0 || moveList.isEmpty())
+		if (depth == 0 || interrupt || moveList.isEmpty())
 			return calcHeuristicValue(gameState);
 
 		int value;
@@ -63,6 +67,15 @@ public class Minimax
 			}
 			return beta;
 		}
+	}
+
+	/** Forces minimax to stop */
+	public static void interrupt()
+	{
+		minimax.interrupt = true;
+
+		if (minimax.bestMove != null)
+			PlanetWars.log("Minimax was interrupted");
 	}
 
 	/**

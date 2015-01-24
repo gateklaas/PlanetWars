@@ -5,7 +5,7 @@ public class GreedyHillClimbing
 	/** Returns the best move possible according to greedy hill climbing */
 	public static Move findBestMove(GameState gameState)
 	{
-		GreedyBot.log("Current value: " + calcHeuristicValue(gameState));
+		PlanetWars.log("Current value: " + calcHeuristicValue(gameState));
 
 		List<Move> allpossibleMovesList = gameState.simulateAllPossibleMoves(true);
 		int bestValue = -1000000;
@@ -22,7 +22,7 @@ public class GreedyHillClimbing
 			}
 		}
 
-		GreedyBot.log("Best value: " + bestValue);
+		PlanetWars.log("Best value: " + bestValue);
 		return bestMove;
 	}
 

@@ -1,7 +1,5 @@
 public class GreedyBot
 {
-	public static final boolean DEBUG = true;
-
 	public static void doTurn(PlanetWars planetWars)
 	{
 		// Find our best move
@@ -10,8 +8,7 @@ public class GreedyBot
 
 		if (bestMove == null)
 		{
-			// We're out of moves
-			log("GAME OVER");
+			// We're out of moves. Game over
 			System.exit(0);
 			return;
 		}
@@ -54,15 +51,6 @@ public class GreedyBot
 		catch (Exception e)
 		{
 
-		}
-	}
-
-	public static void log(String output)
-	{
-		if (DEBUG)
-		{
-			System.err.println(output);
-			System.err.flush();
 		}
 	}
 }

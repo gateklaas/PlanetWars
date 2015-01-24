@@ -26,17 +26,20 @@ public class Logger
 		// WHAT DO WE WANT TO LOG: (only three options)
 
 		// logOneVsOne("java RandomBot", "java RandomBot", "serial", "10000");
-		// logOneVsAll("java RandomBot", "serial", "10000");
+		// logOneVsAll("java MMBot", "serial", "10000");
 		logAllVsAll("serial", "10000");
 	}
 
+	/** All BOTS vs all BOTS on all MAPS. Log results. */
 	public static void logAllVsAll(String mode, String time)
 	{
-		boolean fail = false;
+		boolean fail;
 		Map<Battle, Battle.Result> battleMap = new HashMap<Battle, Battle.Result>();
 
 		do
 		{
+			fail = false;
+
 			if (Battle.allVsAll(battleMap, mode, time))
 				fail = true;
 
@@ -55,13 +58,16 @@ public class Logger
 		while (fail);
 	}
 
+	/** One bot vs all BOTS on all MAPS. Log results. */
 	public static void logOneVsAll(String bot, String mode, String time)
 	{
-		boolean fail = false;
+		boolean fail;
 		Map<Battle, Battle.Result> battleMap = new HashMap<Battle, Battle.Result>();
 
 		do
 		{
+			fail = false;
+
 			if (Battle.oneVsAll(battleMap, bot, mode, time))
 				fail = true;
 
@@ -80,13 +86,16 @@ public class Logger
 		while (fail);
 	}
 
+	/** One bot vs one bot on all MAPS. Log results. */
 	public static void logOneVsOne(String bot, String opponent, String mode, String time)
 	{
-		boolean fail = false;
+		boolean fail;
 		Map<Battle, Battle.Result> battleMap = new HashMap<Battle, Battle.Result>();
 
 		do
 		{
+			fail = false;
+
 			if (Battle.oneVsOne(battleMap, bot, opponent, mode, time))
 				fail = true;
 
@@ -117,7 +126,8 @@ public class Logger
 		public void end(PlanetWars pw)
 		{
 			long elapsedTime = System.nanoTime() - startTime;
-			pw.log("time " + elapsedTime);
+			System.err.println("time " + elapsedTime);
+			System.err.flush();
 		}
 	}
 
@@ -199,9 +209,10 @@ public class Logger
 			System.out.println(player1 + " vs " + player2 + " map: " + map + " mode: " + mode);
 
 			Result result = new Result();
+			int retries;
 
 			processStart:
-			for (int i = 0; i < 3; i++)
+			for (retries = 0; retries < 3; retries++)
 			{
 				Process process = null;
 				ProcessBuilder pb = new ProcessBuilder("java", "-jar", PATH + "tools/PlayGame.jar", PATH + "tools/" + map, "\""
@@ -214,8 +225,9 @@ public class Logger
 					InputStreamReader inputReader = new InputStreamReader(process.getInputStream());
 					InputStreamReader errorReader = new InputStreamReader(process.getInputStream());
 					long stopTime = new Date().getTime() + 15000;
+					boolean alive = true;
 
-					while (process.isAlive())
+					while (alive)
 					{
 						while (inputReader.ready())
 							inputReader.read();
@@ -234,6 +246,16 @@ public class Logger
 
 						if (stopTime < new Date().getTime())
 							process.destroy();
+
+						alive = false;
+						try
+						{
+							process.exitValue();
+						}
+						catch (IllegalThreadStateException e)
+						{
+							alive = true;
+						}
 					}
 				}
 				catch (IOException e)
@@ -259,7 +281,12 @@ public class Logger
 			}
 
 			if (result.winner == null)
-				throw new IOException("Player too slow");
+			{
+				if (retries == 0)
+					throw new IOException("Unknown error. Number of turns: " + result.turns);
+				else
+					throw new IOException("Player too slow");
+			}
 
 			System.out.println("Winner: " + result.winner + " Number of turns: " + result.turns);
 			return result;
@@ -302,6 +329,10 @@ public class Logger
 								t2++;
 								p2Time = p2Time * (t2 - 1) / t2 + Long.parseLong(words[3]) / t2;
 							}
+						}
+						else
+						{
+							System.out.println(line);
 						}
 					}
 					else if (line.length() > 0 && !words[0].equals("Engine"))
@@ -358,7 +389,7 @@ public class Logger
 									if ((result.winner.equals("2")))
 										writers[0].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
 									else if (result.winner.equals("draw"))
-										writers[1].write(opponent + ";0;" + battle.map + ";" + time + "\n");
+										writers[1].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
 									if ((result.winner.equals("1")))
 										writers[2].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
 								}
@@ -376,7 +407,7 @@ public class Logger
 									if ((result.winner.equals("1")))
 										writers[0].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
 									else if (result.winner.equals("draw"))
-										writers[1].write(opponent + ";0;" + battle.map + ";" + time + "\n");
+										writers[1].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
 									if ((result.winner.equals("2")))
 										writers[2].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
 								}
@@ -405,9 +436,9 @@ public class Logger
 			public long averageTurnTime(boolean player1)
 			{
 				if (player1)
-					return p1Time / 1000;
+					return p1Time / 1000000; // nano to milli
 				else
-					return p2Time / 1000;
+					return p2Time / 1000000; // nano to milli
 			}
 		}
 

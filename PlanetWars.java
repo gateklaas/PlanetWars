@@ -14,7 +14,8 @@ import java.util.TreeSet;
 
 public class PlanetWars
 {
-	private static Logger.Timer timer = new Logger.Timer();
+	public static final boolean DEBUG = false; // <- logging is disabled when false!
+	private static final Logger.Timer TIMER = new Logger.Timer();
 
 	public PlanetWars()
 	{} // just an empty constructor for cloning purposes
@@ -26,7 +27,7 @@ public class PlanetWars
 		planets = new ArrayList<Planet>();
 		fleets = new ArrayList<Fleet>();
 		ParseGameState(gameStateString);
-		timer.start();
+		TIMER.start();
 	}
 
 	// Returns the number of planets. Planets are numbered starting with 0.
@@ -210,7 +211,7 @@ public class PlanetWars
 	// orders. This signifies the end of our turn.
 	public void FinishTurn()
 	{
-		timer.end(this);
+		TIMER.end(this);
 		System.out.println("go");
 		System.out.flush();
 	}
@@ -389,12 +390,25 @@ public class PlanetWars
 
 	public void log(Object... args)
 	{
-		String output = "";
-		for (Object arg : args)
+		if (DEBUG)
 		{
-			output += arg + " ";
+			String output = "";
+
+			for (Object arg : args)
+				output += arg + " ";
+
+			System.err.println(output);
+			System.err.flush();
 		}
-		System.err.println(output);
+	}
+
+	public static void log(String output)
+	{
+		if (DEBUG)
+		{
+			System.err.println(output);
+			System.err.flush();
+		}
 	}
 
 	@Override
