@@ -8,7 +8,7 @@ public class MMBot
 
 		// Find our best move, look 4 moves ahead
 		GameState currentGameState = new GameState(planetWars.Planets());
-		Move bestMove = Minimax.findBestMove(currentGameState, 7);
+		Move bestMove = Minimax.findBestMove(currentGameState, 4);
 
 		if (bestMove == null)
 		{
@@ -32,10 +32,10 @@ public class MMBot
 		@Override
 		public void run()
 		{
-			// Wait 900 milliseconds
+			// Wait 800 milliseconds
 			try
 			{
-				Thread.sleep(850);
+				Thread.sleep(800);
 			}
 			catch (InterruptedException e)
 			{}

@@ -368,7 +368,7 @@ public class Logger
 					writers[2] = new FileWriter(bot + " won.csv");
 
 					for (FileWriter writer : writers)
-						writer.write("opponent;Turns;Map;Avarage turn time\n");
+						writer.write("Opponent,Turns,Map,Avarage turn time\n");
 
 					for (String opponent : BOTS)
 					{
@@ -384,14 +384,15 @@ public class Logger
 							else if (bot.equals(battle.player1) && opponent.equals(battle.player2))
 							{
 								long time = result.averageTurnTime(true);
+								String line = opponent + "," + result.turns + "," + battle.map + "," + time + "\n";
 								try
 								{
 									if ((result.winner.equals("2")))
-										writers[0].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
+										writers[0].write(line);
 									else if (result.winner.equals("draw"))
-										writers[1].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
+										writers[1].write(line);
 									if ((result.winner.equals("1")))
-										writers[2].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
+										writers[2].write(line);
 								}
 								catch (IOException e)
 								{
@@ -402,14 +403,15 @@ public class Logger
 							else if (bot.equals(battle.player2) && opponent.equals(battle.player1))
 							{
 								long time = result.averageTurnTime(false);
+								String line = opponent + "," + result.turns + "," + battle.map + "," + time + "\n";
 								try
 								{
 									if ((result.winner.equals("1")))
-										writers[0].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
+										writers[0].write(line);
 									else if (result.winner.equals("draw"))
-										writers[1].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
+										writers[1].write(line);
 									if ((result.winner.equals("2")))
-										writers[2].write(opponent + ";" + result.turns + ";" + battle.map + ";" + time + "\n");
+										writers[2].write(line);
 								}
 								catch (IOException e)
 								{
