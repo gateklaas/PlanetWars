@@ -22,3 +22,7 @@ Every csv file contains information about the following:
 * The map that was played on
 * Number of turns the bot has used
 * Average time in milliseconds it took to make a turn
+
+### Excel ###
+How to open csv files properly in excel 2013:
+http://stackoverflow.com/questions/17953679/how-to-correctly-display-csv-files-within-excel-2013

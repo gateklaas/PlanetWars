@@ -1,1 +1,2 @@
-opponent;Turns;Map;Avarage turn time
+Opponent,Turns,Map,Avarage turn time
+java BullyBot,100,maps/8planets/map1.txt,0
