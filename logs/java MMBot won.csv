@@ -1,0 +1,25 @@
+opponent;Turns;Map;Avarage turn time
+java RandomBot;25;maps/8planets/map3.txt;511
+java RandomBot;15;maps/8planets/map1.txt;598
+java RandomBot;28;maps/8planets/map2.txt;105
+java RandomBot;19;maps/8planets/map2.txt;244
+java RandomBot;28;maps/8planets/map3.txt;444
+java RandomBot;8;maps/8planets/map1.txt;422
+java BullyBot;24;maps/8planets/map3.txt;358
+java BullyBot;16;maps/8planets/map2.txt;281
+java BullyBot;17;maps/8planets/map2.txt;237
+java BullyBot;24;maps/8planets/map1.txt;280
+java BullyBot;41;maps/8planets/map1.txt;498
+java BullyBot;31;maps/8planets/map3.txt;485
+java AdaptiveBot;15;maps/8planets/map1.txt;637
+java AdaptiveBot;22;maps/8planets/map2.txt;291
+java AdaptiveBot;12;maps/8planets/map3.txt;396
+java AdaptiveBot;17;maps/8planets/map2.txt;238
+java AdaptiveBot;28;maps/8planets/map1.txt;242
+java LookaheadBot;14;maps/8planets/map3.txt;431
+java LookaheadBot;15;maps/8planets/map2.txt;265
+java LookaheadBot;30;maps/8planets/map2.txt;489
+java LookaheadBot;20;maps/8planets/map1.txt;290
+java GreedyBot;60;maps/8planets/map2.txt;80
+java GreedyBot;81;maps/8planets/map2.txt;58
+java GreedyBot;14;maps/8planets/map3.txt;414
