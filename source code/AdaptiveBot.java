@@ -43,7 +43,9 @@ public class AdaptiveBot
 		{
 			totalPlanetSize += p.GrowthRate();
 		}
-		int averagePlanetSize = Math.round(totalPlanetSize / pw.NeutralPlanets().size());
+		int averagePlanetSize = 0;
+		if (totalPlanetSize != 0)
+			averagePlanetSize = Math.round(totalPlanetSize / pw.NeutralPlanets().size());
 
 		// Use AdaptivityMap to get the bot which matches the current environment characteristics
 		String thisTurnBot = AdaptivityMap.get(neutralPlanets, averagePlanetSize);

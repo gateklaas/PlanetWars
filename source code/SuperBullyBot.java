@@ -8,12 +8,12 @@ import java.io.StringWriter;
 
 public class SuperBullyBot
 {
-	public static void doTurn(PlanetWars pw)
+	public static void doTurn(PlanetWars planetWars)
 	{
 		// (1) Find my strongest planet.
 		Planet source = null;
 		double sourceScore = Double.MIN_VALUE;
-		for (Planet myPlanet : pw.MyPlanets())
+		for (Planet myPlanet : planetWars.MyPlanets())
 		{
 			double score = myPlanet.NumShips();
 
@@ -24,23 +24,68 @@ public class SuperBullyBot
 			}
 		}
 
-		// (2) Find the weakest enemy planet.
+		// (2) Find weakest enemy planet.
 		Planet dest = null;
 		double destScore = Double.MAX_VALUE;
-		for (Planet notMyPlanet : pw.EnemyPlanets()) // <- THIS LINE IS DIFFERENT FROM BULLY_BOT
+		for (Planet enemyPlanet : planetWars.EnemyPlanets())
 		{
-			double score = (notMyPlanet.NumShips());
+			double score = enemyPlanet.NumShips();
 
 			if (score < destScore)
 			{
 				destScore = score;
-				dest = notMyPlanet;
+				dest = enemyPlanet;
 			}
 		}
 
 		// (3) Attack!
 		if (source != null && dest != null)
-			pw.IssueOrder(source, dest);
+			planetWars.IssueOrder(source, dest);
+	}
+
+	/** Returns the best enemy move */
+	public static Move findEnemyBestMove(GameState gameState)
+	{
+		// (1) Find the enemies strongest planet.
+		Planet source = null;
+		double sourceScore = Double.MIN_VALUE;
+		for (Planet enemyPlanet : gameState.planetArray)
+		{
+			if (enemyPlanet.Owner() == 2)
+			{
+				double score = enemyPlanet.NumShips();
+
+				if (score > sourceScore)
+				{
+					sourceScore = score;
+					source = enemyPlanet;
+				}
+			}
+		}
+		if (source == null)
+			return null;
+
+		// (2) Find my weakest planet.
+		Planet dest = null;
+		double destScore = Double.MAX_VALUE;
+		for (Planet myPlanet : gameState.planetArray)
+		{
+			if (myPlanet.Owner() == 1)
+			{
+				double score = myPlanet.NumShips();
+
+				if (score < destScore)
+				{
+					destScore = score;
+					dest = myPlanet;
+				}
+			}
+		}
+		if (dest == null)
+			return null;
+
+		// (3) Attack!
+		return Move.simulate(gameState, source, dest);
 	}
 
 	public static void main(String[] args)

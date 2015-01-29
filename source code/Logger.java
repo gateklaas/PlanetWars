@@ -15,8 +15,11 @@ public class Logger
 	public static final String PATH = "C:/Users/klaas/Workspaces/Python/PlanetWars-master/";
 
 	// All bots
-	public static final String[] BOTS = { "java RandomBot", "java BullyBot", "java AdaptiveBot", "java LookaheadBot",
-			"java SuperBullyBot", "java GreedyBot", "java MMBot", "java SimpleAdaptiveBot" };
+	// public static final String[] BOTS = { "java GreedyBot1", "java GreedyBot2", "java GreedyBot3", "java GreedyBot4",
+	// "java GreedyBot5", "java GreedyBot6", "java GreedyBot7", "java GreedyBot8", "java GreedyBot9", "java GreedyBot10",
+// "java GreedyBot11", "java GreedyBot12", "java GreedyBot13", "java GreedyBot14", "java GreedyBot15" };
+	public static final String[] BOTS = { "java AdaptiveBot", "java BeamBot", "java BullyBot", "java GreedyBot",
+			"java LookaheadBot", "java MMBot", "java RandomBot", "java SimpleAdaptiveBot", "java SuperBullyBot" };
 
 	// All maps
 	public static final String[] MAPS = { "maps/8planets/map1.txt", "maps/8planets/map2.txt", "maps/8planets/map3.txt" };
@@ -26,8 +29,8 @@ public class Logger
 		// WHAT DO WE WANT TO LOG: (only three options)
 
 		// logOneVsOne("java RandomBot", "java RandomBot", "serial", "10000");
-		// logOneVsAll("java MMBot", "serial", "10000");
-		logAllVsAll("serial", "10000");
+		// logOneVsAll("java BeamBot", "serial", "10000");
+		logAllVsAll("parallel", "10000");
 	}
 
 	/** All BOTS vs all BOTS on all MAPS. Log results. */
@@ -270,7 +273,7 @@ public class Logger
 
 				while (br.ready())
 				{
-					if (!result.parseLine(br.readLine()))
+					if (!result.parseLine(mode, br.readLine()))
 					{
 						System.out.println("Timeout -> restart");
 						continue processStart;
@@ -300,48 +303,46 @@ public class Logger
 			int t1, t2;
 
 			/** Returns false on error */
-			public boolean parseLine(String line) throws IOException
+			public boolean parseLine(String mode, String line) throws IOException
 			{
-				if (turns < 100)
-				{
-					line = line.trim();
-					String[] words = line.split(" ");
-
-					if (words.length > 2 && words[2].equals("timeout:"))
-						return false;
-					else if (words.length > 2 && words[0].equals("Player") && words[2].equals("Wins!"))
-						winner = words[1];
-					else if (words[0].equals("Draw!"))
-						winner = "draw";
-					else if (words[0].equals("Turn"))
-						turns = Integer.parseInt(words[1]);
-					else if (words[0].equals("Player") && line.length() >= 9)
-					{
-						if (words.length == 4 && words[2].equals("time"))
-						{
-							if (words[1].equals("1:"))
-							{
-								t1++;
-								p1Time = p1Time * (t1 - 1) / t1 + Long.parseLong(words[3]) / t1;
-							}
-							else
-							{
-								t2++;
-								p2Time = p2Time * (t2 - 1) / t2 + Long.parseLong(words[3]) / t2;
-							}
-						}
-						else
-						{
-							System.out.println(line);
-						}
-					}
-					else if (line.length() > 0 && !words[0].equals("Engine"))
-						throw new IOException(line);
-				}
-				else
+				if (winner == null && ((turns >= 100 && mode.equals("serial")) || (turns >= 50 && mode.equals("parallel"))))
 				{
 					winner = "draw";
 				}
+
+				line = line.trim();
+				String[] words = line.split(" ");
+
+				if (words.length > 2 && words[2].equals("timeout:"))
+					return false;
+				else if (words.length > 2 && words[0].equals("Player") && words[2].equals("Wins!"))
+					winner = words[1];
+				else if (words[0].equals("Draw!"))
+					winner = "draw";
+				else if (words[0].equals("Turn"))
+					turns = Integer.parseInt(words[1]);
+				else if (words[0].equals("Player") && line.length() >= 9)
+				{
+					if (words.length == 4 && words[2].equals("time"))
+					{
+						if (words[1].equals("1:"))
+						{
+							t1++;
+							p1Time = p1Time * (t1 - 1) / t1 + Long.parseLong(words[3]) / t1;
+						}
+						else
+						{
+							t2++;
+							p2Time = p2Time * (t2 - 1) / t2 + Long.parseLong(words[3]) / t2;
+						}
+					}
+					else
+					{
+						System.out.println(line);
+					}
+				}
+				else if (line.length() > 0 && !words[0].equals("Engine"))
+					throw new IOException(line);
 
 				return true;
 			}
@@ -381,42 +382,45 @@ public class Logger
 							{
 								loggingFailed = true;
 							}
-							else if (bot.equals(battle.player1) && opponent.equals(battle.player2))
+							else
 							{
-								long time = result.averageTurnTime(true);
-								String line = opponent + "," + result.turns + "," + battle.map + "," + time + "\n";
-								try
+								if (bot.equals(battle.player1) && opponent.equals(battle.player2))
 								{
-									if ((result.winner.equals("2")))
-										writers[0].write(line);
-									else if (result.winner.equals("draw"))
-										writers[1].write(line);
-									if ((result.winner.equals("1")))
-										writers[2].write(line);
+									long time = result.averageTurnTime(true);
+									String line = opponent + "," + result.turns + "," + battle.map + "," + time + "\n";
+									try
+									{
+										if ((result.winner.equals("2")))
+											writers[0].write(line);
+										else if (result.winner.equals("draw"))
+											writers[1].write(line);
+										if ((result.winner.equals("1")))
+											writers[2].write(line);
+									}
+									catch (IOException e)
+									{
+										System.err.println(e.getMessage());
+										loggingFailed = true;
+									}
 								}
-								catch (IOException e)
+								if (bot.equals(battle.player2) && opponent.equals(battle.player1))
 								{
-									System.err.println(e.getMessage());
-									loggingFailed = true;
-								}
-							}
-							else if (bot.equals(battle.player2) && opponent.equals(battle.player1))
-							{
-								long time = result.averageTurnTime(false);
-								String line = opponent + "," + result.turns + "," + battle.map + "," + time + "\n";
-								try
-								{
-									if ((result.winner.equals("1")))
-										writers[0].write(line);
-									else if (result.winner.equals("draw"))
-										writers[1].write(line);
-									if ((result.winner.equals("2")))
-										writers[2].write(line);
-								}
-								catch (IOException e)
-								{
-									System.err.println(e.getMessage());
-									loggingFailed = true;
+									long time = result.averageTurnTime(false);
+									String line = opponent + "," + result.turns + "," + battle.map + "," + time + "\n";
+									try
+									{
+										if ((result.winner.equals("1")))
+											writers[0].write(line);
+										else if (result.winner.equals("draw"))
+											writers[1].write(line);
+										if ((result.winner.equals("2")))
+											writers[2].write(line);
+									}
+									catch (IOException e)
+									{
+										System.err.println(e.getMessage());
+										loggingFailed = true;
+									}
 								}
 							}
 						}

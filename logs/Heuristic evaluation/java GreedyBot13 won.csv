@@ -1,0 +1,15 @@
+Opponent,Turns,Map,Avarage turn time
+java GreedyBot1,33,maps/8planets/map2.txt,1
+java GreedyBot1,31,maps/8planets/map3.txt,1
+java GreedyBot1,66,maps/8planets/map2.txt,0
+java GreedyBot2,47,maps/8planets/map1.txt,1
+java GreedyBot3,31,maps/8planets/map2.txt,1
+java GreedyBot3,83,maps/8planets/map3.txt,0
+java GreedyBot4,12,maps/8planets/map2.txt,2
+java GreedyBot4,11,maps/8planets/map3.txt,2
+java GreedyBot4,13,maps/8planets/map2.txt,1
+java GreedyBot4,19,maps/8planets/map1.txt,1
+java GreedyBot9,32,maps/8planets/map2.txt,1
+java GreedyBot12,45,maps/8planets/map3.txt,1
+java GreedyBot13,43,maps/8planets/map1.txt,1
+java GreedyBot13,41,maps/8planets/map3.txt,1

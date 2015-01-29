@@ -43,6 +43,35 @@ public class GameState
 		return allPossibleMovesList;
 	}
 
+	/**
+	 * Evaluate the current game-state. <br>
+	 * Returns the heuristic value. <br>
+	 * A high value is good, a low value is bad.
+	 */
+	public int evaluate()
+	{
+		int value = 0;
+		boolean victory = true;
+
+		for (Planet planet : planetArray)
+		{
+			if (planet.Owner() == 1) // if we own this planet
+			{
+				value += planet.GrowthRate() + planet.NumShips() * 5;
+			}
+			else if (planet.Owner() >= 2) // if the enemy owns this planet
+			{
+				value -= planet.GrowthRate() + planet.NumShips() * 5;
+				victory = false;
+			}
+		}
+
+		if (victory)
+			return 1000000 - value;
+		else
+			return value;
+	}
+
 	/** Returns a thorough copy of this object */
 	@Override
 	public Object clone()

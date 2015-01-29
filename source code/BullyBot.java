@@ -8,12 +8,12 @@ import java.io.StringWriter;
 
 public class BullyBot
 {
-	public static void doTurn(PlanetWars pw)
+	public static void doTurn(PlanetWars planetWars)
 	{
 		// (1) Find my strongest planet.
 		Planet source = null;
 		double sourceScore = Double.MIN_VALUE;
-		for (Planet myPlanet : pw.MyPlanets())
+		for (Planet myPlanet : planetWars.MyPlanets())
 		{
 			double score = myPlanet.NumShips();
 
@@ -24,12 +24,12 @@ public class BullyBot
 			}
 		}
 
-		// (2) Find the weakest enemy or neutral planet.
+		// (2) Find weakest enemy or neutral planet.
 		Planet dest = null;
 		double destScore = Double.MAX_VALUE;
-		for (Planet notMyPlanet : pw.NotMyPlanets())
+		for (Planet notMyPlanet : planetWars.NotMyPlanets())
 		{
-			double score = (notMyPlanet.NumShips());
+			double score = notMyPlanet.NumShips();
 
 			if (score < destScore)
 			{
@@ -40,7 +40,52 @@ public class BullyBot
 
 		// (3) Attack!
 		if (source != null && dest != null)
-			pw.IssueOrder(source, dest);
+			planetWars.IssueOrder(source, dest);
+	}
+
+	/** Returns the best enemy move */
+	public static Move findEnemyBestMove(GameState gameState)
+	{
+		// (1) Find the enemies strongest planet.
+		Planet source = null;
+		double sourceScore = Double.MIN_VALUE;
+		for (Planet enemyPlanet : gameState.planetArray)
+		{
+			if (enemyPlanet.Owner() >= 2)
+			{
+				double score = enemyPlanet.NumShips();
+
+				if (score > sourceScore)
+				{
+					sourceScore = score;
+					source = enemyPlanet;
+				}
+			}
+		}
+		if (source == null)
+			return null;
+
+		// (2) Find my or neutrals weakest planet.
+		Planet dest = null;
+		double destScore = Double.MAX_VALUE;
+		for (Planet notEnemyPlanet : gameState.planetArray)
+		{
+			if (notEnemyPlanet.Owner() < 2)
+			{
+				double score = notEnemyPlanet.NumShips();
+
+				if (score < destScore)
+				{
+					destScore = score;
+					dest = notEnemyPlanet;
+				}
+			}
+		}
+		if (dest == null)
+			return null;
+
+		// (3) Attack!
+		return Move.simulate(gameState, source, dest);
 	}
 
 	public static void main(String[] args)

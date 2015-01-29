@@ -11,14 +11,14 @@ public class Minimax
 	/** Returns the best move possible according to the minimax algorithm with alpha–beta pruning */
 	public static Move findBestMove(GameState gameState, int maxDepth)
 	{
-		PlanetWars.log("Current value: " + calcHeuristicValue(gameState));
+		PlanetWars.log("Current value: " + gameState.evaluate());
 
 		minimax = new Minimax();
 		minimax.interrupt = false;
 		minimax.maxDepth = maxDepth;
 		minimax.alphabeta(gameState, maxDepth, -1000000, 1000000, true);
 
-		PlanetWars.log("Best value: " + calcHeuristicValue(minimax.bestMove.getGameStateAfterMove()));
+		PlanetWars.log("Best value: " + minimax.bestMove.getGameStateAfterMove().evaluate());
 		return minimax.bestMove;
 	}
 
@@ -31,7 +31,7 @@ public class Minimax
 		List<Move> moveList = gameState.simulateAllPossibleMoves(max);
 
 		if (depth == 0 || interrupt || moveList.isEmpty())
-			return calcHeuristicValue(gameState);
+			return gameState.evaluate();
 
 		int value;
 		if (max)
@@ -76,29 +76,5 @@ public class Minimax
 
 		if (minimax.bestMove != null)
 			PlanetWars.log("Minimax was interrupted");
-	}
-
-	/**
-	 * Evaluate the current game-state. <br>
-	 * Returns a value that describes how good we are doing. <br>
-	 * A high value is good, a low value is bad.
-	 */
-	public static int calcHeuristicValue(GameState gameState)
-	{
-		int value = 0;
-
-		for (Planet planet : gameState.planetArray)
-		{
-			if (planet.Owner() == 1) // if we own this planet
-			{
-				value += planet.GrowthRate() * 5 + planet.NumShips();
-			}
-			else if (planet.Owner() >= 2) // if the enemy owns this planet
-			{
-				value -= planet.GrowthRate() * 5 + planet.NumShips();
-			}
-		}
-
-		return value;
 	}
 }

@@ -1,0 +1,23 @@
+Opponent,Turns,Map,Avarage turn time
+java BeamBot,109,maps/8planets/map2.txt,0
+java BeamBot,108,maps/8planets/map3.txt,0
+java BeamBot,110,maps/8planets/map2.txt,0
+java BeamBot,109,maps/8planets/map3.txt,0
+java GreedyBot,113,maps/8planets/map2.txt,0
+java GreedyBot,112,maps/8planets/map3.txt,0
+java GreedyBot,112,maps/8planets/map2.txt,0
+java GreedyBot,112,maps/8planets/map3.txt,0
+java MMBot,112,maps/8planets/map2.txt,0
+java MMBot,112,maps/8planets/map3.txt,0
+java MMBot,112,maps/8planets/map3.txt,0
+java MMBot,113,maps/8planets/map2.txt,0
+java SimpleAdaptiveBot,113,maps/8planets/map3.txt,0
+java SimpleAdaptiveBot,112,maps/8planets/map2.txt,0
+java SimpleAdaptiveBot,112,maps/8planets/map2.txt,0
+java SimpleAdaptiveBot,112,maps/8planets/map3.txt,0
+java SuperBullyBot,112,maps/8planets/map2.txt,0
+java SuperBullyBot,112,maps/8planets/map2.txt,0
+java SuperBullyBot,112,maps/8planets/map1.txt,0
+java SuperBullyBot,112,maps/8planets/map1.txt,0
+java SuperBullyBot,108,maps/8planets/map3.txt,0
+java SuperBullyBot,108,maps/8planets/map3.txt,0

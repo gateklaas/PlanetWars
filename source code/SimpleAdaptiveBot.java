@@ -31,7 +31,7 @@ public class SimpleAdaptiveBot
 	{
 		for (Planet notMyPlanet : pw.NotMyPlanets())
 		{
-			if (notMyPlanet.NumShips() <= notMyPlanet.GrowthRate())
+			if (notMyPlanet.NumShips() < notMyPlanet.GrowthRate())
 			{
 				return BULLY_BOT;
 			}
